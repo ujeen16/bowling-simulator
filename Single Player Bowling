@@ -1,0 +1,152 @@
+# bowling simulation game by Eugene Ayotte on 10/06/19
+from random import randrange
+
+#holds pins knocked down
+rolls = []
+rolls10=[]
+
+def simulate_game():
+    print("--Starting Bowling--")
+    counter=0
+    while counter < 9:
+        counter+=1
+        print("----------------------"'\n'"Starting Frame", counter)
+        roll_one = int(randrange(0, 11))
+        print("First Roll: you got", roll_one, "pins")
+        rolls.append(roll_one)
+        if roll_one == 10:
+            print("STRIKE!!!")
+        else:
+            pinsleft = 10 - roll_one + 1
+            roll_two = int(randrange(0, pinsleft))
+            print("Second Roll: you got", roll_two, "pins")
+            rolls.append(roll_two)
+            if roll_two == pinsleft - 1:
+                print("SPARE!")
+
+
+def simulate_round10():
+    x=1
+    while x < 2:
+        print("----------------------"'\n'"Starting Frame 10")
+        x += 1
+        #roll one
+        roll_one = randrange(0,11)
+        print("First Roll: you got", roll_one, "pins")
+        rolls10.append(roll_one)
+#first roll strike variations
+        if roll_one == 10:
+            print("STRIKE!!")
+            roll_two = randrange(0, 11)
+            print("Second Roll: you got", roll_two, "pins")
+            rolls10.append(roll_two)
+            if roll_two == 10:
+                print("STRIKE!!")
+                # roll three
+                roll_three = randrange(0, 11)
+                rolls10.append(roll_three)
+                print("Third Roll: you got", roll_three, "pins")
+                if roll_three == 10:
+                    print("STRIKE!!")
+                    # strike, strike, strike
+                    break
+                else:
+                    #strike, strike, nonstrike
+                    break
+            else:
+                pinsleft = 10 - roll_two + 1
+                roll_three = randrange(0, pinsleft)
+                rolls10.append(roll_three)
+                print("Third Roll: you got", roll_three, "pins")
+                if roll_three == pinsleft - 1:
+                    print("SPARE!")
+                    #strike, nonstrike, spare
+                    break
+                else:
+                    # strike, notstike, nonstrike
+                    break
+#first roll not a strike variations
+        else:
+            pinsleft = 10 - roll_one + 1
+            roll_two = randrange(0, pinsleft)
+            rolls10.append(roll_two)
+            print("Second Roll: you got", roll_two, "pins")
+            if roll_two == pinsleft - 1:
+                print("SPARE!")
+                roll_three = randrange(0, 11)
+                print("Third Roll: you got", roll_three, "pins")
+                rolls10.append(roll_three)
+                if roll_three == 10:
+                    print("STRIKE!!")
+                    # spare, strike
+                    break
+                else:
+                    #spare, number
+                    break
+            else:
+                #number, number
+                break
+
+
+def total_score():
+    score = 0
+    # used to pick out of list rolls
+    roll_choice = int(0)
+    for i in range(1, 1000000):
+        # ends point score at end
+        if rolls[roll_choice] == "yatta":
+            return score
+        else:
+            roll_choice = int(roll_choice)
+            # strike points
+            #strike on last roll
+            if rolls[roll_choice] == 10 and rolls[roll_choice+1] == "yatta":
+                score = score + rolls[roll_choice]
+                roll_choice += 1
+            #strike on second to last roll
+            elif rolls[roll_choice] == 10 and rolls[roll_choice+2] == "yatta":
+                score = score + rolls[roll_choice] + rolls[roll_choice +1]
+                roll_choice += 1
+            elif rolls[roll_choice] == 10:
+                # adds strike 10 plus next two rolls
+                score = score + rolls[roll_choice] + rolls[roll_choice + 1] + rolls[roll_choice + 2]
+                roll_choice += 1
+            elif rolls[roll_choice+1] == "yatta":
+                score = score + rolls[roll_choice]
+                roll_choice +=1
+            elif rolls[roll_choice] + rolls[roll_choice + 1] == 10 and rolls[roll_choice+2] == "yatta":
+                score = score + rolls[roll_choice] + rolls[roll_choice + 1]
+                roll_choice += 2
+            elif rolls[roll_choice] + rolls[roll_choice + 1] == 10:
+                # adds first+second roll for spare 10pts then adds third role
+                score = score + rolls[roll_choice] + rolls[roll_choice + 1] + rolls[roll_choice + 2]
+                roll_choice += 2
+            # no strike no spare adds 2 rolls of game
+            else:
+                score = score + rolls[roll_choice] + rolls[roll_choice + 1]
+                roll_choice += 2
+
+def total_score_round10(score):
+    if len(rolls10) == 2:
+        score = score + rolls10[0] + rolls10[1]
+        print("your score is:", score)
+    elif len(rolls10) == 3:
+        score = score + rolls10[0] + rolls10[1] + rolls10[2]
+        print("your score is:", score)
+    else:
+        print("fails")
+
+
+def ending():
+    rolls.append("yatta")
+    rolls.append("yatta")
+    rolls.append("yatta")
+
+
+def main():
+    simulate_game()
+    ending()
+    t = total_score()
+    simulate_round10()
+    total_score_round10(t)
+main()
